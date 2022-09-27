@@ -1,0 +1,96 @@
+﻿@using Assignment_03_Library.DataAccess
+@using Assignment_03_WebApp.Helpers
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var cart = SessionHelper.GetObjectFromJson<IEnumerable<OrderDetail>>(Context.Session, "Card");
+    Member mem = SessionHelper.GetObjectFromJson<Member>(Context.Session, "Member");
+}
+<h1>Cart</h1>
+<br />
+<br />
+<h3>Hello @mem.Email</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                OrderId
+            </th>
+            <th>
+                ProductId
+            </th>
+            <th>
+                UnitPrice
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Discount
+            </th>
+            <th>
+                Price
+            </th>
+            <th>Action</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            decimal total = 0;
+            if (cart != null)
+            {
+                foreach (var item in cart)
+                {
+                    <form asp-controller="Cart" asp-action="Save">
+                    <tr>
+                        <td>
+                            <input name="orderId" class="orderId form-control" value="@item.OrderId" readonly>
+                        </td>
+                        <td>
+                                @item.ProductId
+                        </td>
+                        <td>
+                                @item.UnitPrice
+                        </td>
+                        <td>
+                                @item.Quantity
+                        </td>
+                        <td>
+                                @item.Discount
+                        </td>
+                        <td>
+                                @{
+                                    decimal price = item.UnitPrice * item.Quantity;
+                                    total = total + price;
+                                <p>@price</p>
+                                }
+                        </td>
+                        <td>
+                                @Html.ActionLink("Remove", "Remove", new { id = item.ProductId}) |
+                                @Html.ActionLink("Remove All", "RemoveAll", new { id = item.ProductId})
+                        </td>
+                    </tr>
+                    </form>
+                }
+            }
+            else
+            {
+                <tr>
+                    <p>Your Cart Is Empty</p>
+                </tr>
+            }
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>Total: @total</b></td>
+            <td>@Html.ActionLink("Buy", "Buy")</td>
+        </tr>
+    </tbody>
+</table>

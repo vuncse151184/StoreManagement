@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Assignment_03_Library.DataAccess.Product>
+@using Assignment_03_Library.DataAccess
+@using Assignment_03_WebApp.Helpers
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    Member mem = SessionHelper.GetObjectFromJson<Member>(Context.Session, "Member");
+    if (mem != null)
+    {
+        <p>Hello @mem.Email</p>
+    }
+}
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitInStock)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitInStock)
+                </td>
+                <td>
+                    @{
+                        if (mem.MemberId == 0)
+                        {
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.ProductId }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.ProductId })
+                            </p>
+                        }
+                        else
+                        {
+                            if (item.UnitInStock > 0)
+                            {
+                                <p>@Html.ActionLink("Add Card", "AddCard","Cart", new { id = item.ProductId })</p>
+                            }
+                            else
+                            {
+                                <p>Out of Stock</p>
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
